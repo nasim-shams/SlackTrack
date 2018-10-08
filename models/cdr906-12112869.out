@@ -1,0 +1,63 @@
+Tue Sep 25 11:57:16 2018       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 384.111                Driver Version: 384.111                   |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  Tesla P100-PCIE...  On   | 00000000:03:00.0 Off |                    0 |
+| N/A   32C    P0    31W / 250W |      0MiB / 12193MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  Tesla P100-PCIE...  On   | 00000000:04:00.0 Off |                    0 |
+| N/A   32C    P0    24W / 250W |      0MiB / 12193MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   2  Tesla P100-PCIE...  On   | 00000000:82:00.0 Off |                    0 |
+| N/A   30C    P0    24W / 250W |      0MiB / 12193MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   3  Tesla P100-PCIE...  On   | 00000000:83:00.0 Off |                    0 |
+| N/A   29C    P0    24W / 250W |      0MiB / 12193MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+cudnn/7.0: 
+============================================================================================
+The NVidia software listed above is subject to the terms of the NVidia Software
+License Agreement, which can be obtained via http://developer.nvidia.com.
+By continuing, you accept to be bound by the terms of that license.
+
+Le logiciel NVidia listé ci-dessus est sous réserve des termes de la licence
+NVidia Software License Agreement, qui peut être obtenue via
+http://developer.nvidia.com.
+En continuant, vous acceptez les termes de cette licence.
+============================================================================================
+	 
+-------------------------------------------------------------------------------
+There are messages associated with the following module(s):
+-------------------------------------------------------------------------------
+
+python/3.5.2:
+   This module is deprecated and will be removed in the future. Please
+   upgrade to python/3.5. If you had created virtual environments we
+   recommend to recreate them. Ce module est marqué pour être retiré et
+   sera supprimé dans le futur. Veuillez utiliser python/3.5. Si vous aviez
+   créé un environnement virtuel, nous vous recommandons de le recréer.
+
+-------------------------------------------------------------------------------
+
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+The following have been reloaded with a version change:
+  1) python/3.6.3 => python/3.5.2
+
+/var/spool/slurmd/job12112869/slurm_script: line 13: tensorflow/bin/activate: No such file or directory
+Traceback (most recent call last):
+  File "./train_hpc.py", line 9, in <module>
+    import numpy as np
+ImportError: No module named 'numpy'

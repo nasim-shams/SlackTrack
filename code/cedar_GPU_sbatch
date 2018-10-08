@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --gres=gpu:4        # request GPU "generic resource"
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=125G        # memory per node
+#SBATCH --time=0-1:00      # time (DD-HH:MM)
+#SBATCH --output=%N-%j.out  # %N for node name, %j for jobID
+#SBATCH --account=def-sstrothe
+nvidia-smi
+
+module load cuda cudnn python/3.6.3
+module load scipy-stack/2018b
+source /home/nshams/tensorflow/bin/activate
+
+python ./train_hpc.py
