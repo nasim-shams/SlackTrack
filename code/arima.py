@@ -3,6 +3,7 @@
 Created on Thu Sep 27 18:05:20 2018
 
 @author: shams
+perforimg time-series forcasting using arima for individual user's time series
 """
 
 # importing libraries
@@ -27,13 +28,17 @@ userTotal = userTotal.sort_values(by=['totalPosts'],ascending = False)
 user = userTotal.iloc[ii]['user']
 filename = 'C:/Users/shams/OneDrive/Desktop/Insight/datasets/'+user+'.json'
 df_data_1 = pd.read_json(filename)['date']
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~prerpare train/test data~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 X= np.nan_to_num(df_data_1.values)
 size = int(len(X) * 0.9)
 train, test = X[0:size], X[size:len(X)]
 history = [x for x in train]
 predictions = list()
+
+#~~~~~~~~~~~~~~~~~~~~~running arima ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 for t in range(len(test)):
 	model = ARIMA(history, order=(7,1,1))
 	model_fit = model.fit(disp=0)
@@ -45,7 +50,7 @@ for t in range(len(test)):
 	print('predicted=%f, expected=%f' % (yhat, obs))
 error = mean_squared_error(test, predictions)
 print('Test MSE: %.3f' % error)
-# plot
+# ~~~~~~~~~~~~~~~~~~~~~~~plot results
 plt.figure()
 plt.plot(test)
 plt.plot(predictions, color='red')

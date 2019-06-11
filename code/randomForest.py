@@ -27,7 +27,9 @@ allChannelData['time'] = pd.to_datetime(allChannelData['ts'],unit='s')
 userTotal = pd.read_json('C:/Users/shams/OneDrive/Desktop/Insight/datasets/userTotal.json')
 userTotal = userTotal.sort_values(by=['totalPosts'],ascending = False)
 
-#user= 'U0AB5K6HY'
+
+# calculating features: average user actiivity,  number of chabbels, 
+# average channel score, number of connected users and number of channels for each user
 userID = list()
 userw2=list()
 userw4=list()
@@ -42,10 +44,11 @@ activeUser = list()
 a = allChannelData['user'].unique()
 a = [x for x in a if x is not None]
 
+
+# calculating average user daily and weekely activity 
 for user in a:
     #print(user)
     userID.append(user)
-    #   for user in userTotal.iloc[9:,]['user']:
     usrLog = allChannelData[allChannelData['user']==user].sort_values(by=['ts']) 
     usrLog['date']=usrLog['time'].apply(lambda x : x.date())   
     usr_daily = usrLog['date'].value_counts().sort_index()   
@@ -64,8 +67,6 @@ for user in a:
         usr8 = usr_weekly.index.max()
 
 
-    #user_init.append(usr_weekly.iloc[0:4].sum())
-    #user_final.append(usr_weekly.iloc[-8:-4].sum())
     userw2.append(usr_weekly.iloc[0:2].mean()) 
     userw4.append(usr_weekly.iloc[2:4].mean()) 
     userw6.append(usr_weekly.iloc[4:6].mean()) 
@@ -83,8 +84,6 @@ for user in a:
     
     #number of channels user is a member of @ wk8    
     
-    #for ch in usrLog['channel'].unique():
-        
    
     usr_joined = usrLog[usrLog['subtype']=='channel_join']
     usr_joined.index = usr_joined['time']

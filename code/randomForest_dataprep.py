@@ -3,15 +3,20 @@
 Created on Sun Sep 30 17:06:37 2018
 
 @author: shams
+
+This file loads, perps the data and applies random forest and gradient boosting 
+on the features
 """
 #~~~~~~~~~~~~~~~loading packages~~~~~~~~~~~~~~~~~~
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_curve
+from sklearn.metrics import auc
 import matplotlib.pyplot as plt
 import itertools
 import sklearn.tree as skt
@@ -25,15 +30,16 @@ from imblearn.under_sampling import RepeatedEditedNearestNeighbours
 import networkx as nx
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-UserData = pd.read_json('C:/Users/shams/OneDrive/Desktop/Insight/datasets/RFData.json')
+UserData = pd.read_json('C:/Users/shams/OneDrive/Documents/Projects/Insight/datasets/RFData.json')
 
 y = np.array(UserData.loc[:,'isActvie'])
 x = np.array(UserData.loc[:,['wk2','wk4','wk6','wk8','Nchans','Nusers','chanScore']])
+x = np.array(UserData.loc[:,['wk2','wk4','Nchans','Nusers','chanScore']])
+
 x = np.nan_to_num(x)
 y = np.nan_to_num(y)
 
-#~~~~~~~~~~~~~~over sampling ~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~over sampling to deal with class imbalance ~~~~~~~~~~~~~~~~~~~
 sm = SMOTE(kind='svm')
 tm = TomekLinks()
 renn = RepeatedEditedNearestNeighbours()
@@ -51,32 +57,44 @@ train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2)
 train_x, test_x, train_y, test_y = train_test_split(x_res, y_res, test_size=0.2)
 
 
+C = np.corrcoef(x.T)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  random forest
 RF = RandomForestClassifier(min_samples_leaf =5)
 RF= RF.fit(train_x, train_y)
-
 y_pred = RF.predict(test_x)
-
 y_score = RF.predict_proba(test_x)
+print(RF.score(test_x,test_y))
+print(RF.feature_importances_)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ gradient boost
+GB = GradientBoostingClassifier()
+GB= GB.fit(train_x, train_y)
+y_pred = GB.predict(test_x)
+y_score = GB.predict_proba(test_x)
+    
+
 
 fpr, tpr, threshs = roc_curve(test_y, y_score[:,1])
+roc_auc = auc(fpr, tpr)
 
 cnf_matrix = confusion_matrix(test_y, y_pred)
 print(cnf_matrix)
 
-"""
-
-dot_data = skt.export_graphviz(RF.estimators_[1],out_file = None,
-                               class_names =['0','1'],
-                               feature_names = ['wk2','wk4','wk6','wk8','Nchans','Nusers','chanScore'],
-                               impurity = False, 
-                               filled = True,label = 'none')
-
-
-g = pydotplus.graph_from_dot_data(dot_data)
-
-"""
-
-
+#~~~~~~~~~~~~~~plotting ROC curve ~~~~~~~~~~~~~~~~~~
+plt.figure()
+lw = 2
+plt.plot(fpr, tpr, color='darkorange',
+         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC')
+plt.legend(loc="lower right")
+plt.show()
 
 
 def plot_confusion_matrix(cm, classes,
@@ -107,10 +125,11 @@ def plot_confusion_matrix(cm, classes,
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, format(cm[i, j], fmt),
                  horizontalalignment="center",
+                 fontsize=25,
                  color="white" if cm[i, j] > thresh else "black")
 
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+    plt.ylabel('True label',fontsize=15)
+    plt.xlabel('Predicted label',fontsize=15)
     plt.tight_layout()
 
 
